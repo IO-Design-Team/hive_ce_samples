@@ -1,3 +1,3 @@
 # contacts_hive
 
-Source code for a contacts app built with Flutter using the Hive package.
+Source for the [contacts tutorial](https://docs.hive.isar.community/#/tutorials/contacts). Stores immutable `Contact` models with `GenerateAdapters`.
