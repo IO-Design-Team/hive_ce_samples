@@ -8,12 +8,12 @@ part of 'todo.dart';
 
 class TodoAdapter extends TypeAdapter<Todo> {
   @override
-  final int typeId = 0;
+  final typeId = 0;
 
   @override
   Todo read(BinaryReader reader) {
-    final int numOfFields = reader.readByte();
-    final Map<int, dynamic> fields = <int, dynamic>{
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Todo()

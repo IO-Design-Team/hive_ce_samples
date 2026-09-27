@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'colored_path_adapter.dart';

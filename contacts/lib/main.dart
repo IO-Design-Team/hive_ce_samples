@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
 part 'main.g.dart';
 
@@ -62,8 +61,8 @@ class MyApp extends StatelessWidget {
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (context, index) {
-                Contact c = box.getAt(index);
-                String relationship = relationships[c.relationship];
+                Contact c = box.getAt(index)!;
+                String relationship = relationships[c.relationship]!;
                 return InkWell(
                   onLongPress: () {
                     showDialog(
@@ -74,11 +73,11 @@ class MyApp extends StatelessWidget {
                           "Do you want to delete ${c.name}?",
                         ),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: Text("No"),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
                               Navigator.of(context).pop();
@@ -138,15 +137,15 @@ class AddContact extends StatefulWidget {
 }
 
 class _AddContactState extends State<AddContact> {
-  String name;
-  int age;
-  String phoneNumber;
-  Relationship relationship;
+  String? name;
+  int? age;
+  String? phoneNumber;
+  Relationship? relationship;
 
   void onFormSubmit() {
-    if (widget.formKey.currentState.validate()) {
+    if (widget.formKey.currentState!.validate()) {
       Box<Contact> contactsBox = Hive.box<Contact>(contactsBoxName);
-      contactsBox.add(Contact(name, age, phoneNumber, relationship));
+      contactsBox.add(Contact(name!, age!, phoneNumber!, relationship!));
       Navigator.of(context).pop();
     }
   }
@@ -166,6 +165,8 @@ class _AddContactState extends State<AddContact> {
                 decoration: const InputDecoration(
                   labelText: "Name",
                 ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? "Enter a name" : null,
                 onChanged: (value) {
                   setState(() {
                     name = value;
@@ -180,9 +181,11 @@ class _AddContactState extends State<AddContact> {
                 decoration: const InputDecoration(
                   labelText: "Age",
                 ),
+                validator: (value) =>
+                    int.tryParse(value ?? "") == null ? "Enter a valid age" : null,
                 onChanged: (value) {
                   setState(() {
-                    age = int.parse(value);
+                    age = int.tryParse(value);
                   });
                 },
               ),
@@ -192,6 +195,9 @@ class _AddContactState extends State<AddContact> {
                 decoration: const InputDecoration(
                   labelText: "Phone",
                 ),
+                validator: (value) => value == null || value.isEmpty
+                    ? "Enter a phone number"
+                    : null,
                 onChanged: (value) {
                   setState(() {
                     phoneNumber = value;
@@ -202,11 +208,13 @@ class _AddContactState extends State<AddContact> {
                 items: relationships.keys.map((Relationship value) {
                   return DropdownMenuItem<Relationship>(
                     value: value,
-                    child: Text(relationships[value]),
+                    child: Text(relationships[value]!),
                   );
                 }).toList(),
-                value: relationship,
+                initialValue: relationship,
                 hint: Text("Relationship"),
+                validator: (value) =>
+                    value == null ? "Select a relationship" : null,
                 onChanged: (value) {
                   setState(() {
                     relationship = value;

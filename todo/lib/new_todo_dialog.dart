@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo/todo.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 
 class NewTodoDialog extends StatefulWidget {
   @override
@@ -35,13 +35,13 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text('Add'),
           onPressed: () {
             if (controller.text.isNotEmpty) {
