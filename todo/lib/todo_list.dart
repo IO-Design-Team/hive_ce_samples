@@ -4,19 +4,17 @@ import 'package:todo/todo.dart';
 class TodoList extends StatelessWidget {
   final List<Todo> todos;
 
-  const TodoList(this.todos);
+  const TodoList(this.todos, {super.key});
 
   @override
   Widget build(BuildContext context) {
     if (todos.isEmpty) {
-      return Center(
-        child: Text('Nothing to do... Great!'),
-      );
+      return const Center(child: Text('Nothing to do... Great!'));
     } else {
       return ListView.builder(
         itemCount: todos.length,
         itemBuilder: (BuildContext context, int index) {
-          var todo = todos[index];
+          final todo = todos[index];
           return _buildTodo(todo);
         },
       );
@@ -27,7 +25,7 @@ class TodoList extends StatelessWidget {
     return Card(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: Row(
           children: <Widget>[
             Column(
@@ -48,7 +46,7 @@ class TodoList extends StatelessWidget {
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             IconButton(
               iconSize: 30,
               icon: Icon(todo.done ? Icons.clear : Icons.check),
@@ -59,7 +57,7 @@ class TodoList extends StatelessWidget {
             ),
             IconButton(
               iconSize: 30,
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: () {
                 todo.delete();
               },

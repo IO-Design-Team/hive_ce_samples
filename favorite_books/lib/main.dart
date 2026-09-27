@@ -25,10 +25,12 @@ const List<String> books = [
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox<String>(favoritesBox);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -44,9 +46,9 @@ class _MyAppState extends State<MyApp> {
 
   Widget getIcon(int index) {
     if (favoriteBooksBox.containsKey(index)) {
-      return Icon(Icons.favorite, color: Colors.red);
+      return const Icon(Icons.favorite, color: Colors.red);
     }
-    return Icon(Icons.favorite_border);
+    return const Icon(Icons.favorite_border);
   }
 
   void onFavoritePress(int index) {
@@ -61,13 +63,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Favorite Books with Hive',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Favorite Books w/ Hive"),
-        ),
+        appBar: AppBar(title: const Text('Favorite Books w/ Hive')),
         body: ValueListenableBuilder(
           valueListenable: favoriteBooksBox.listenable(),
           builder: (context, Box<String> box, _) {

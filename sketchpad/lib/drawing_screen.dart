@@ -8,6 +8,8 @@ import 'path_painter.dart';
 import 'undo_button.dart';
 
 class DrawingScreen extends StatefulWidget {
+  const DrawingScreen({super.key});
+
   @override
   _DrawingScreenState createState() => _DrawingScreenState();
 }
@@ -28,7 +30,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
                   builder: buildPathsFromBox,
                 ),
                 DrawingArea(selectedColorIndex),
-                Positioned(
+                const Positioned(
                   top: 10,
                   right: 10,
                   child: Text('powered by Hive'),
@@ -44,33 +46,30 @@ class _DrawingScreenState extends State<DrawingScreen> {
                 children: [
                   for (var i = 0; i < ColoredPath.colors.length; i++)
                     buildColorCircle(i),
-                  ClearButton(),
-                  UndoButton(),
+                  const ClearButton(),
+                  const UndoButton(),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
 
   Widget buildPathsFromBox(BuildContext context, Box box) {
-    var paths = box.values.whereType<ColoredPath>();
+    final paths = box.values.whereType<ColoredPath>();
     return Stack(
       children: <Widget>[
         for (var path in paths)
-          CustomPaint(
-            size: Size.infinite,
-            painter: PathPainter(path),
-          ),
+          CustomPaint(size: Size.infinite, painter: PathPainter(path)),
       ],
     );
   }
 
   Widget buildColorCircle(int colorIndex) {
-    var selected = selectedColorIndex == colorIndex;
+    final selected = selectedColorIndex == colorIndex;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -79,7 +78,7 @@ class _DrawingScreenState extends State<DrawingScreen> {
       },
       child: ClipOval(
         child: Container(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding: const EdgeInsets.only(bottom: 16),
           height: selected ? 50 : 36,
           width: selected ? 50 : 36,
           color: ColoredPath.colors[colorIndex],

@@ -7,7 +7,7 @@ import 'path_painter.dart';
 class DrawingArea extends StatefulWidget {
   final int selectedColorIndex;
 
-  DrawingArea(this.selectedColorIndex);
+  DrawingArea(this.selectedColorIndex, {super.key});
 
   @override
   _DrawingAreaState createState() => _DrawingAreaState();
@@ -32,15 +32,12 @@ class _DrawingAreaState extends State<DrawingArea> {
           path = ColoredPath(0);
         });
       },
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: PathPainter(path),
-      ),
+      child: CustomPaint(size: Size.infinite, painter: PathPainter(path)),
     );
   }
 
   void addPoint(Offset point) {
-    var renderBox = context.findRenderObject() as RenderBox;
+    final renderBox = context.findRenderObject() as RenderBox;
     setState(() {
       path.addPoint(renderBox.globalToLocal(point));
     });
