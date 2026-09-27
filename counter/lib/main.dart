@@ -4,34 +4,31 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hive Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'OpenSans',
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'OpenSans'),
       home: FutureBuilder(
         future: Hive.openBox<int>('myBox'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
               print(snapshot.error);
-              return Scaffold(
-                body: Center(
-                  child: Text('Something went wrong :/'),
-                ),
+              return const Scaffold(
+                body: Center(child: Text('Something went wrong :/')),
               );
             } else {
-              return MyHomePage(title: 'Hive Demo Page');
+              return const MyHomePage(title: 'Hive Demo Page');
             }
           } else {
-            return Scaffold(
+            return const Scaffold(
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -48,7 +45,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({required this.title});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -68,19 +65,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             if (kIsWeb)
-              Text('Refresh this tab to test persistence')
+              const Text('Refresh this tab to test persistence')
             else
-              Text('Restart the app to test persistence'),
-            SizedBox(height: 8),
-            Text('You have pushed the button this many times:'),
+              const Text('Restart the app to test persistence'),
+            const SizedBox(height: 8),
+            const Text('You have pushed the button this many times:'),
             ValueListenableBuilder<Box<int>>(
               valueListenable: _box.listenable(),
               builder: (context, box, _) {
@@ -89,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: Theme.of(context).textTheme.headlineMedium,
                 );
               },
-            )
+            ),
           ],
         ),
       ),
@@ -101,17 +96,15 @@ class _MyHomePageState extends State<MyHomePage> {
               _box.put('counter', _box.get('counter', defaultValue: 0)! - 1);
             },
             tooltip: 'Decrement',
-            child: Icon(Icons.remove),
+            child: const Icon(Icons.remove),
           ),
-          SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
           FloatingActionButton(
             onPressed: () {
               _box.put('counter', _box.get('counter', defaultValue: 0)! + 1);
             },
             tooltip: 'Increment',
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         ],
       ),

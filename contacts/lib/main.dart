@@ -4,7 +4,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
 part 'main.g.dart';
 
-const String contactsBoxName = "contacts";
+const String contactsBoxName = 'contacts';
 
 @HiveType(typeId: 1)
 enum Relationship {
@@ -13,9 +13,10 @@ enum Relationship {
   @HiveField(1)
   Friend,
 }
+
 const relationships = <Relationship, String>{
-  Relationship.Family: "Family",
-  Relationship.Friend: "Friend",
+  Relationship.Family: 'Family',
+  Relationship.Friend: 'Friend',
 };
 
 @HiveType(typeId: 0)
@@ -37,10 +38,12 @@ void main() async {
   Hive.registerAdapter(ContactAdapter());
   Hive.registerAdapter(RelationshipAdapter());
   await Hive.openBox<Contact>(contactsBoxName);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     Widget _buildDivider() => const SizedBox(height: 5);
@@ -48,37 +51,32 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Contacts App',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Contacts App with Hive'),
-        ),
+        appBar: AppBar(title: const Text('Contacts App with Hive')),
         body: ValueListenableBuilder(
           valueListenable: Hive.box<Contact>(contactsBoxName).listenable(),
           builder: (context, Box<Contact> box, _) {
-            if (box.values.isEmpty)
-              return Center(
-                child: Text("No contacts"),
-              );
+            if (box.values.isEmpty) {
+              return const Center(child: Text('No contacts'));
+            }
             return ListView.builder(
               itemCount: box.length,
               itemBuilder: (context, index) {
-                Contact c = box.getAt(index)!;
-                String relationship = relationships[c.relationship]!;
+                final c = box.getAt(index)!;
+                final relationship = relationships[c.relationship]!;
                 return InkWell(
                   onLongPress: () {
                     showDialog(
                       context: context,
                       barrierDismissible: true,
                       builder: (_) => AlertDialog(
-                        content: Text(
-                          "Do you want to delete ${c.name}?",
-                        ),
+                        content: Text('Do you want to delete ${c.name}?'),
                         actions: <Widget>[
                           TextButton(
-                            child: Text("No"),
+                            child: const Text('No'),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                            child: Text("Yes"),
+                            child: const Text('Yes'),
                             onPressed: () async {
                               Navigator.of(context).pop();
                               await box.deleteAt(index);
@@ -90,7 +88,7 @@ class MyApp extends StatelessWidget {
                   },
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -99,9 +97,9 @@ class MyApp extends StatelessWidget {
                           _buildDivider(),
                           Text(c.phoneNumber),
                           _buildDivider(),
-                          Text("Age: ${c.age}"),
+                          Text('Age: ${c.age}'),
                           _buildDivider(),
-                          Text("Relationship: $relationship"),
+                          Text('Relationship: $relationship'),
                           _buildDivider(),
                         ],
                       ),
@@ -115,11 +113,11 @@ class MyApp extends StatelessWidget {
         floatingActionButton: Builder(
           builder: (context) {
             return FloatingActionButton(
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AddContact()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => AddContact()));
               },
             );
           },
@@ -131,6 +129,8 @@ class MyApp extends StatelessWidget {
 
 class AddContact extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
+
+  AddContact({super.key});
 
   @override
   _AddContactState createState() => _AddContactState();
@@ -144,7 +144,7 @@ class _AddContactState extends State<AddContact> {
 
   void onFormSubmit() {
     if (widget.formKey.currentState!.validate()) {
-      Box<Contact> contactsBox = Hive.box<Contact>(contactsBoxName);
+      final contactsBox = Hive.box<Contact>(contactsBoxName);
       contactsBox.add(Contact(name!, age!, phoneNumber!, relationship!));
       Navigator.of(context).pop();
     }
@@ -157,16 +157,14 @@ class _AddContactState extends State<AddContact> {
         child: Form(
           key: widget.formKey,
           child: ListView(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             children: <Widget>[
               TextFormField(
                 autofocus: true,
-                initialValue: "",
-                decoration: const InputDecoration(
-                  labelText: "Name",
-                ),
+                initialValue: '',
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) =>
-                    value == null || value.isEmpty ? "Enter a name" : null,
+                    value == null || value.isEmpty ? 'Enter a name' : null,
                 onChanged: (value) {
                   setState(() {
                     name = value;
@@ -175,14 +173,13 @@ class _AddContactState extends State<AddContact> {
               ),
               TextFormField(
                 keyboardType: TextInputType.number,
-                initialValue: "",
+                initialValue: '',
                 maxLength: 3,
                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                decoration: const InputDecoration(
-                  labelText: "Age",
-                ),
-                validator: (value) =>
-                    int.tryParse(value ?? "") == null ? "Enter a valid age" : null,
+                decoration: const InputDecoration(labelText: 'Age'),
+                validator: (value) => int.tryParse(value ?? '') == null
+                    ? 'Enter a valid age'
+                    : null,
                 onChanged: (value) {
                   setState(() {
                     age = int.tryParse(value);
@@ -191,12 +188,10 @@ class _AddContactState extends State<AddContact> {
               ),
               TextFormField(
                 keyboardType: TextInputType.phone,
-                initialValue: "",
-                decoration: const InputDecoration(
-                  labelText: "Phone",
-                ),
+                initialValue: '',
+                decoration: const InputDecoration(labelText: 'Phone'),
                 validator: (value) => value == null || value.isEmpty
-                    ? "Enter a phone number"
+                    ? 'Enter a phone number'
                     : null,
                 onChanged: (value) {
                   setState(() {
@@ -212,9 +207,9 @@ class _AddContactState extends State<AddContact> {
                   );
                 }).toList(),
                 initialValue: relationship,
-                hint: Text("Relationship"),
+                hint: const Text('Relationship'),
                 validator: (value) =>
-                    value == null ? "Select a relationship" : null,
+                    value == null ? 'Select a relationship' : null,
                 onChanged: (value) {
                   setState(() {
                     relationship = value;
@@ -222,8 +217,8 @@ class _AddContactState extends State<AddContact> {
                 },
               ),
               OutlinedButton(
-                child: Text("Submit"),
                 onPressed: onFormSubmit,
+                child: const Text('Submit'),
               ),
             ],
           ),

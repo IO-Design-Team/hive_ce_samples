@@ -9,8 +9,8 @@ class ColoredPathAdapter extends TypeAdapter<ColoredPath> {
 
   @override
   ColoredPath read(BinaryReader reader) {
-    var path = ColoredPath(reader.readByte());
-    var len = reader.readUint32();
+    final path = ColoredPath(reader.readByte());
+    final len = reader.readUint32();
     for (var i = 0; i < len; i++) {
       path.addPoint(Offset(reader.readDouble(), reader.readDouble()));
     }

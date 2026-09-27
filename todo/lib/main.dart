@@ -9,21 +9,20 @@ void main() async {
   await Hive.initFlutter();
 
   Hive.registerAdapter(TodoAdapter());
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hive To-Do App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'OpenSans',
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'OpenSans'),
       home: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 600),
           child: FutureBuilder(
             future: Future.wait([
               Hive.openBox('settings'),
@@ -33,19 +32,15 @@ class MyApp extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.error != null) {
                   print(snapshot.error);
-                  return Scaffold(
-                    body: Center(
-                      child: Text('Something went wrong :/'),
-                    ),
+                  return const Scaffold(
+                    body: Center(child: Text('Something went wrong :/')),
                   );
                 } else {
-                  return TodoMainScreen();
+                  return const TodoMainScreen();
                 }
               } else {
-                return Scaffold(
-                  body: Center(
-                    child: Text('Opening Hive...'),
-                  ),
+                return const Scaffold(
+                  body: Center(child: Text('Opening Hive...')),
                 );
               }
             },
@@ -57,12 +52,14 @@ class MyApp extends StatelessWidget {
 }
 
 class TodoMainScreen extends StatelessWidget {
+  const TodoMainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15),
           child: ValueListenableBuilder(
             valueListenable: Hive.box('settings').listenable(),
             builder: _buildWithBox,
@@ -70,12 +67,12 @@ class TodoMainScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
-              return NewTodoDialog();
+              return const NewTodoDialog();
             },
           );
         },
@@ -84,17 +81,14 @@ class TodoMainScreen extends StatelessWidget {
   }
 
   Widget _buildWithBox(BuildContext context, Box settings, Widget? child) {
-    var reversed = settings.get('reversed', defaultValue: true) as bool;
+    final reversed = settings.get('reversed', defaultValue: true) as bool;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Hive To-Do',
-              style: TextStyle(fontSize: 40),
-            ),
+            const Text('Hive To-Do', style: TextStyle(fontSize: 40)),
             const SizedBox(width: 20),
             IconButton(
               icon: Icon(
@@ -108,7 +102,7 @@ class TodoMainScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Text(
+        const Text(
           kIsWeb
               ? 'Refresh this tab to test persistence.'
               : 'Restart the app to test persistence.',

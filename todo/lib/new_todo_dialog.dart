@@ -3,6 +3,8 @@ import 'package:todo/todo.dart';
 import 'package:hive_ce/hive_ce.dart';
 
 class NewTodoDialog extends StatefulWidget {
+  const NewTodoDialog({super.key});
+
   @override
   _NewTodoDialogState createState() => _NewTodoDialogState();
 }
@@ -19,33 +21,33 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create To-Do Entry'),
+      title: const Text('Create To-Do Entry'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               hintText: 'Enter a task',
             ),
             controller: controller,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: Text('Add'),
+          child: const Text('Add'),
           onPressed: () {
             if (controller.text.isNotEmpty) {
-              var todo = Todo()
+              final todo = Todo()
                 ..name = controller.text
                 ..created = DateTime.now();
               Hive.box<Todo>('todos').add(todo);
