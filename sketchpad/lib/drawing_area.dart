@@ -14,7 +14,10 @@ class DrawingArea extends StatefulWidget {
 }
 
 class _DrawingAreaState extends State<DrawingArea> {
-  var path = ColoredPath(0);
+  var points = <Offset>[];
+
+  ColoredPath get path =>
+      ColoredPath(colorIndex: widget.selectedColorIndex, points: points);
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +26,12 @@ class _DrawingAreaState extends State<DrawingArea> {
         addPoint(details.globalPosition);
       },
       onPanStart: (details) {
-        path = ColoredPath(widget.selectedColorIndex);
         addPoint(details.globalPosition);
       },
       onPanEnd: (details) {
-        Hive.box('sketch').add(path);
+        Hive.box<ColoredPath>('sketch').add(path);
         setState(() {
-          path = ColoredPath(0);
+          points = [];
         });
       },
       child: CustomPaint(size: Size.infinite, painter: PathPainter(path)),
@@ -39,7 +41,7 @@ class _DrawingAreaState extends State<DrawingArea> {
   void addPoint(Offset point) {
     final renderBox = context.findRenderObject() as RenderBox;
     setState(() {
-      path.addPoint(renderBox.globalToLocal(point));
+      points = [...points, renderBox.globalToLocal(point)];
     });
   }
 }

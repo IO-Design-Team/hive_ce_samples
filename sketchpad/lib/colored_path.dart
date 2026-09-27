@@ -9,39 +9,10 @@ class ColoredPath {
     Colors.amber,
   ];
 
-  static List<Paint>? _paints;
-
-  Paint get paint {
-    if (_paints == null) {
-      _paints = [];
-      for (var color in colors) {
-        _paints!.add(
-          Paint()
-            ..strokeCap = StrokeCap.round
-            ..isAntiAlias = true
-            ..color = color
-            ..strokeWidth = 3
-            ..style = PaintingStyle.stroke,
-        );
-      }
-    }
-    return _paints![colorIndex];
-  }
-
   final int colorIndex;
+  final List<Offset> points;
 
-  final path = Path();
+  const ColoredPath({required this.colorIndex, required this.points});
 
-  List<Offset> points = [];
-
-  ColoredPath(this.colorIndex);
-
-  void addPoint(Offset point) {
-    if (points.isEmpty) {
-      path.moveTo(point.dx, point.dy);
-    } else {
-      path.lineTo(point.dx, point.dy);
-    }
-    points.add(point);
-  }
+  Color get color => colors[colorIndex];
 }

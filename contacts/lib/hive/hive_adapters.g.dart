@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'main.dart';
+part of 'hive_adapters.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
+// AdaptersGenerator
 // **************************************************************************
 
 class ContactAdapter extends TypeAdapter<Contact> {
@@ -17,10 +17,10 @@ class ContactAdapter extends TypeAdapter<Contact> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Contact(
-      fields[0] as String,
-      (fields[1] as num).toInt(),
-      fields[3] as String,
-      fields[2] as Relationship,
+      name: fields[0] as String,
+      age: (fields[1] as num).toInt(),
+      phoneNumber: fields[2] as String,
+      relationship: fields[3] as Relationship,
     );
   }
 
@@ -33,9 +33,9 @@ class ContactAdapter extends TypeAdapter<Contact> {
       ..writeByte(1)
       ..write(obj.age)
       ..writeByte(2)
-      ..write(obj.relationship)
+      ..write(obj.phoneNumber)
       ..writeByte(3)
-      ..write(obj.phoneNumber);
+      ..write(obj.relationship);
   }
 
   @override
@@ -57,20 +57,20 @@ class RelationshipAdapter extends TypeAdapter<Relationship> {
   Relationship read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return Relationship.Family;
+        return Relationship.family;
       case 1:
-        return Relationship.Friend;
+        return Relationship.friend;
       default:
-        return Relationship.Family;
+        return Relationship.family;
     }
   }
 
   @override
   void write(BinaryWriter writer, Relationship obj) {
     switch (obj) {
-      case Relationship.Family:
+      case Relationship.family:
         writer.writeByte(0);
-      case Relationship.Friend:
+      case Relationship.friend:
         writer.writeByte(1);
     }
   }

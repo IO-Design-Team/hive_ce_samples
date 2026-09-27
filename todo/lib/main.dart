@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'package:todo/hive/hive_registrar.g.dart';
 import 'package:todo/new_todo_dialog.dart';
 import 'package:todo/todo.dart';
 import 'package:todo/todo_list.dart';
@@ -8,7 +9,9 @@ import 'package:todo/todo_list.dart';
 void main() async {
   await Hive.initFlutter();
 
-  Hive.registerAdapter(TodoAdapter());
+  Hive.registerAdapters();
+  await Hive.openBox('settings');
+  await Hive.openBox<Todo>('todos');
   runApp(const MyApp());
 }
 
@@ -23,28 +26,7 @@ class MyApp extends StatelessWidget {
       home: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
-          child: FutureBuilder(
-            future: Future.wait([
-              Hive.openBox('settings'),
-              Hive.openBox<Todo>('todos'),
-            ]),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.error != null) {
-                  print(snapshot.error);
-                  return const Scaffold(
-                    body: Center(child: Text('Something went wrong :/')),
-                  );
-                } else {
-                  return const TodoMainScreen();
-                }
-              } else {
-                return const Scaffold(
-                  body: Center(child: Text('Opening Hive...')),
-                );
-              }
-            },
-          ),
+          child: const TodoMainScreen(),
         ),
       ),
     );
@@ -60,9 +42,10 @@ class TodoMainScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15),
-          child: ValueListenableBuilder(
-            valueListenable: Hive.box('settings').listenable(),
-            builder: _buildWithBox,
+          child: StreamBuilder(
+            stream: Hive.box('settings').watch(key: 'reversed'),
+            builder: (context, snapshot) =>
+                _buildWithBox(context, Hive.box('settings')),
           ),
         ),
       ),
@@ -80,7 +63,7 @@ class TodoMainScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWithBox(BuildContext context, Box settings, Widget? child) {
+  Widget _buildWithBox(BuildContext context, Box settings) {
     final reversed = settings.get('reversed', defaultValue: true) as bool;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,14 +93,14 @@ class TodoMainScreen extends StatelessWidget {
         ),
         const SizedBox(height: 40),
         Expanded(
-          child: ValueListenableBuilder<Box<Todo>>(
-            valueListenable: Hive.box<Todo>('todos').listenable(),
-            builder: (context, box, _) {
-              var todos = box.values.toList().cast<Todo>();
+          child: StreamBuilder(
+            stream: Hive.box<Todo>('todos').watch(),
+            builder: (context, snapshot) {
+              var keys = Hive.box<Todo>('todos').keys.toList();
               if (reversed) {
-                todos = todos.reversed.toList();
+                keys = keys.reversed.toList();
               }
-              return TodoList(todos);
+              return TodoList(keys);
             },
           ),
         ),

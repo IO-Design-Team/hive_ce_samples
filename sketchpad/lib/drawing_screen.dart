@@ -25,9 +25,12 @@ class _DrawingScreenState extends State<DrawingScreen> {
           Expanded(
             child: Stack(
               children: <Widget>[
-                WatchBoxBuilder(
-                  box: Hive.box('sketch'),
-                  builder: buildPathsFromBox,
+                StreamBuilder(
+                  stream: Hive.box<ColoredPath>('sketch').watch(),
+                  builder: (context, snapshot) => buildPathsFromBox(
+                    context,
+                    Hive.box<ColoredPath>('sketch'),
+                  ),
                 ),
                 DrawingArea(selectedColorIndex),
                 const Positioned(
@@ -58,8 +61,8 @@ class _DrawingScreenState extends State<DrawingScreen> {
     );
   }
 
-  Widget buildPathsFromBox(BuildContext context, Box box) {
-    final paths = box.values.whereType<ColoredPath>();
+  Widget buildPathsFromBox(BuildContext context, Box<ColoredPath> box) {
+    final paths = box.values;
     return Stack(
       children: <Widget>[
         for (var path in paths)

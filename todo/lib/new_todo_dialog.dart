@@ -47,9 +47,7 @@ class _NewTodoDialogState extends State<NewTodoDialog> {
           child: const Text('Add'),
           onPressed: () {
             if (controller.text.isNotEmpty) {
-              final todo = Todo()
-                ..name = controller.text
-                ..created = DateTime.now();
+              final todo = Todo(name: controller.text, created: DateTime.now());
               Hive.box<Todo>('todos').add(todo);
             }
             Navigator.of(context).pop();
