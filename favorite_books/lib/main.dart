@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
 const favoritesBox = 'favorite_books';
 const List<String> books = [
@@ -35,7 +34,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Box<String> favoriteBooksBox;
+  late Box<String> favoriteBooksBox;
 
   @override
   void initState() {

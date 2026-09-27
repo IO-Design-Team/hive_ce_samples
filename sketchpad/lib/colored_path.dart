@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class ColoredPath {
   static const colors = [
@@ -10,13 +9,13 @@ class ColoredPath {
     Colors.amber,
   ];
 
-  static List<Paint> _paints;
+  static List<Paint>? _paints;
 
   Paint get paint {
     if (_paints == null) {
       _paints = [];
       for (var color in colors) {
-        _paints.add(
+        _paints!.add(
           Paint()
             ..strokeCap = StrokeCap.round
             ..isAntiAlias = true
@@ -26,7 +25,7 @@ class ColoredPath {
         );
       }
     }
-    return _paints[colorIndex];
+    return _paints![colorIndex];
   }
 
   final int colorIndex;

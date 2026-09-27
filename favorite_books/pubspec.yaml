@@ -4,13 +4,13 @@ description: A HiveDB sample project that demonstrates simple use of HiveDB.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
     sdk: flutter
-  hive: any
-  hive_flutter: any
+  hive_ce: ^2.20.0
+  hive_ce_flutter: ^2.4.0
 
 dev_dependencies:
   flutter_test:
