@@ -1,15 +1,29 @@
 import 'package:flutter/rendering.dart';
-
-import 'colored_path.dart';
+import 'package:sketchpad/colored_path.dart';
 
 class PathPainter extends CustomPainter {
   final ColoredPath path;
 
-  PathPainter(this.path);
+  const PathPainter(this.path);
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawPath(path.path, path.paint);
+    final points = path.points;
+    if (points.isEmpty) return;
+
+    final linePath = Path()..moveTo(points.first.dx, points.first.dy);
+    for (final point in points.skip(1)) {
+      linePath.lineTo(point.dx, point.dy);
+    }
+
+    final paint = Paint()
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true
+      ..color = path.color
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawPath(linePath, paint);
   }
 
   @override

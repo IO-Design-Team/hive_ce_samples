@@ -4,6 +4,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
+  await Hive.openBox<int>('myBox');
   runApp(const MyApp());
 }
 
@@ -15,31 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hive Demo',
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'OpenSans'),
-      home: FutureBuilder(
-        future: Hive.openBox<int>('myBox'),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.error != null) {
-              print(snapshot.error);
-              return const Scaffold(
-                body: Center(child: Text('Something went wrong :/')),
-              );
-            } else {
-              return const MyHomePage(title: 'Hive Demo Page');
-            }
-          } else {
-            return const Scaffold(
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Loading...'),
-                  CircularProgressIndicator(),
-                ],
-              ),
-            );
-          }
-        },
-      ),
+      home: const MyHomePage(title: 'Hive Demo Page'),
     );
   }
 }
@@ -76,11 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text('Restart the app to test persistence'),
             const SizedBox(height: 8),
             const Text('You have pushed the button this many times:'),
-            ValueListenableBuilder<Box<int>>(
-              valueListenable: _box.listenable(),
-              builder: (context, box, _) {
+            StreamBuilder(
+              stream: _box.watch(key: 'counter'),
+              builder: (context, snapshot) {
                 return Text(
-                  '${box.get('counter', defaultValue: 0)}',
+                  '${_box.get('counter', defaultValue: 0)}',
                   style: Theme.of(context).textTheme.headlineMedium,
                 );
               },

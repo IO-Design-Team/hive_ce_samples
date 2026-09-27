@@ -126,9 +126,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
-        body: ValueListenableBuilder(
-          valueListenable: favoriteBooksBox.listenable(),
-          builder: (context, Box<String> box, _) {
+        body: StreamBuilder(
+          stream: favoriteBooksBox.watch(),
+          builder: (context, snapshot) {
             return ListView.builder(
               itemCount: books.length,
               itemBuilder: (context, listIndex) {

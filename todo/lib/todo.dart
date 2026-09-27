@@ -1,15 +1,10 @@
-import 'package:hive_ce/hive_ce.dart';
+class Todo {
+  final String name;
+  final DateTime created;
+  final bool done;
 
-part 'todo.g.dart';
+  const Todo({required this.name, required this.created, this.done = false});
 
-@HiveType(typeId: 0)
-class Todo extends HiveObject {
-  @HiveField(0)
-  late String name;
-
-  @HiveField(1)
-  late DateTime created;
-
-  @HiveField(2)
-  bool done = false;
+  Todo copyWith({bool? done}) =>
+      Todo(name: name, created: created, done: done ?? this.done);
 }

@@ -1,42 +1,14 @@
+import 'package:contacts_hive/contact.dart';
+import 'package:contacts_hive/hive/hive_registrar.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 
-part 'main.g.dart';
-
 const String contactsBoxName = 'contacts';
-
-@HiveType(typeId: 1)
-enum Relationship {
-  @HiveField(0)
-  Family,
-  @HiveField(1)
-  Friend,
-}
-
-const relationships = <Relationship, String>{
-  Relationship.Family: 'Family',
-  Relationship.Friend: 'Friend',
-};
-
-@HiveType(typeId: 0)
-class Contact {
-  @HiveField(0)
-  String name;
-  @HiveField(1)
-  int age;
-  @HiveField(2)
-  Relationship relationship;
-  @HiveField(3)
-  String phoneNumber;
-
-  Contact(this.name, this.age, this.phoneNumber, this.relationship);
-}
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(ContactAdapter());
-  Hive.registerAdapter(RelationshipAdapter());
+  Hive.registerAdapters();
   await Hive.openBox<Contact>(contactsBoxName);
   runApp(const MyApp());
 }
@@ -52,9 +24,10 @@ class MyApp extends StatelessWidget {
       title: 'Contacts App',
       home: Scaffold(
         appBar: AppBar(title: const Text('Contacts App with Hive')),
-        body: ValueListenableBuilder(
-          valueListenable: Hive.box<Contact>(contactsBoxName).listenable(),
-          builder: (context, Box<Contact> box, _) {
+        body: StreamBuilder(
+          stream: Hive.box<Contact>(contactsBoxName).watch(),
+          builder: (context, snapshot) {
+            final box = Hive.box<Contact>(contactsBoxName);
             if (box.values.isEmpty) {
               return const Center(child: Text('No contacts'));
             }
@@ -62,7 +35,6 @@ class MyApp extends StatelessWidget {
               itemCount: box.length,
               itemBuilder: (context, index) {
                 final c = box.getAt(index)!;
-                final relationship = relationships[c.relationship]!;
                 return InkWell(
                   onLongPress: () {
                     showDialog(
@@ -99,7 +71,7 @@ class MyApp extends StatelessWidget {
                           _buildDivider(),
                           Text('Age: ${c.age}'),
                           _buildDivider(),
-                          Text('Relationship: $relationship'),
+                          Text('Relationship: ${c.relationship.label}'),
                           _buildDivider(),
                         ],
                       ),
@@ -145,7 +117,14 @@ class _AddContactState extends State<AddContact> {
   void onFormSubmit() {
     if (widget.formKey.currentState!.validate()) {
       final contactsBox = Hive.box<Contact>(contactsBoxName);
-      contactsBox.add(Contact(name!, age!, phoneNumber!, relationship!));
+      contactsBox.add(
+        Contact(
+          name: name!,
+          age: age!,
+          phoneNumber: phoneNumber!,
+          relationship: relationship!,
+        ),
+      );
       Navigator.of(context).pop();
     }
   }
@@ -200,10 +179,10 @@ class _AddContactState extends State<AddContact> {
                 },
               ),
               DropdownButtonFormField(
-                items: relationships.keys.map((Relationship value) {
+                items: Relationship.values.map((Relationship value) {
                   return DropdownMenuItem<Relationship>(
                     value: value,
-                    child: Text(relationships[value]!),
+                    child: Text(value.label),
                   );
                 }).toList(),
                 initialValue: relationship,

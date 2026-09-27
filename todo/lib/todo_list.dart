@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:todo/todo.dart';
 
 class TodoList extends StatelessWidget {
-  final List<Todo> todos;
+  final List<dynamic> keys;
 
-  const TodoList(this.todos, {super.key});
+  const TodoList(this.keys, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (todos.isEmpty) {
+    if (keys.isEmpty) {
       return const Center(child: Text('Nothing to do... Great!'));
     } else {
       return ListView.builder(
-        itemCount: todos.length,
+        itemCount: keys.length,
         itemBuilder: (BuildContext context, int index) {
-          final todo = todos[index];
-          return _buildTodo(todo);
+          return _buildTodo(keys[index]);
         },
       );
     }
   }
 
-  Widget _buildTodo(Todo todo) {
+  Widget _buildTodo(dynamic key) {
+    final box = Hive.box<Todo>('todos');
+    final todo = box.get(key)!;
     return Card(
       color: Colors.white,
       child: Padding(
@@ -51,15 +53,14 @@ class TodoList extends StatelessWidget {
               iconSize: 30,
               icon: Icon(todo.done ? Icons.clear : Icons.check),
               onPressed: () {
-                todo.done = !todo.done;
-                todo.save();
+                box.put(key, todo.copyWith(done: !todo.done));
               },
             ),
             IconButton(
               iconSize: 30,
               icon: const Icon(Icons.delete),
               onPressed: () {
-                todo.delete();
+                box.delete(key);
               },
             ),
           ],

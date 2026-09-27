@@ -66,9 +66,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(primarySwatch: Colors.blue),
       home: Scaffold(
         appBar: AppBar(title: const Text('Favorite Books w/ Hive')),
-        body: ValueListenableBuilder(
-          valueListenable: favoriteBooksBox.listenable(),
-          builder: (context, Box<String> box, _) {
+        body: StreamBuilder(
+          stream: favoriteBooksBox.watch(),
+          builder: (context, snapshot) {
             return ListView.builder(
               itemCount: books.length,
               itemBuilder: (context, listIndex) {

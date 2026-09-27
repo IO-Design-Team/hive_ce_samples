@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'todo.dart';
+part of 'hive_adapters.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
+// AdaptersGenerator
 // **************************************************************************
 
 class TodoAdapter extends TypeAdapter<Todo> {
@@ -16,10 +16,11 @@ class TodoAdapter extends TypeAdapter<Todo> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Todo()
-      ..name = fields[0] as String
-      ..created = fields[1] as DateTime
-      ..done = fields[2] as bool;
+    return Todo(
+      name: fields[0] as String,
+      created: fields[1] as DateTime,
+      done: fields[2] == null ? false : fields[2] as bool,
+    );
   }
 
   @override
